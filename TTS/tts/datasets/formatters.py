@@ -278,6 +278,7 @@ def common_voice(root_path, meta_file, ignored_speakers=None):
             items.append(
                 {"text": text, "audio_file": wav_file, "speaker_name": "MCV_" + speaker_name, "root_path": root_path}
             )
+            print(f" [!] {wav_file} in metafile does not exist. Skipping...")
     return items
 
 
