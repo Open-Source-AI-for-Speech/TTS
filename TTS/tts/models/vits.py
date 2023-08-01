@@ -114,8 +114,11 @@ def wav_to_spec(y, n_fft, hop_length, win_length, center=False):
     if wnsize_dtype_device not in hann_window:
         hann_window[wnsize_dtype_device] = torch.hann_window(win_length).to(dtype=y.dtype, device=y.device)
 
-    pad_size = int((n_fft - hop_length) / 2)
-    y = torch.nn.functional.pad(y.unsqueeze(1), (pad_size, pad_size), mode="constant", value=0)
+    y = torch.nn.functional.pad(
+        y.unsqueeze(1),
+        (int((n_fft - hop_length) / 2), int((n_fft - hop_length) / 2)),
+        mode="reflect",
+    )
     y = y.squeeze(1)
 
     spec = torch.stft(
@@ -125,7 +128,7 @@ def wav_to_spec(y, n_fft, hop_length, win_length, center=False):
         win_length=win_length,
         window=hann_window[wnsize_dtype_device],
         center=center,
-        pad_mode="constant",
+        pad_mode="reflect",
         normalized=False,
         onesided=True,
         return_complex=False,
@@ -133,7 +136,6 @@ def wav_to_spec(y, n_fft, hop_length, win_length, center=False):
 
     spec = torch.sqrt(spec.pow(2).sum(-1) + 1e-6)
     return spec
-
 
 
 def spec_to_mel(spec, n_fft, num_mels, sample_rate, fmin, fmax):
