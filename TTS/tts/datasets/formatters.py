@@ -168,12 +168,11 @@ def ljspeech_flac(root_path, meta_file, **kwargs):  # pylint: disable=unused-arg
     https://keithito.com/LJ-Speech-Dataset/"""
     txt_file = os.path.join(root_path, meta_file)
     items = []
-    speaker_name = "ljspeech"
+    speaker_name = "jenny"
     with open(txt_file, "r", encoding="utf-8") as ttf:
         for line in ttf:
             cols = line.split("|")
             wav_file = os.path.join(root_path, cols[0] + ".flac")
-            print('> '+wav_file)
             text = cols[2]
             items.append({"text": text, "audio_file": wav_file, "speaker_name": speaker_name, "root_path": root_path})
     return items
@@ -225,7 +224,6 @@ def sam_accenture(root_path, meta_file, **kwargs):  # pylint: disable=unused-arg
         text = item.text
         wav_file = os.path.join(root_path, "vo_voice_quality_transformation", item.get("id") + ".wav")
         if not os.path.exists(wav_file):
-            print(f" [!] {wav_file} in metafile does not exist. Skipping...")
             continue
         items.append({"text": text, "audio_file": wav_file, "speaker_name": speaker_name, "root_path": root_path})
     return items
@@ -270,11 +268,11 @@ def css10_custom(root_path, meta_file, **kwargs):
             cols = line.strip().split("|")
             wav_file = os.path.join(root_path, cols[0])
             text = cols[1]
-            # Extract the speaker name from the path
-            speaker_name = os.path.basename(root_path)
+            # Extract the speaker name from the parent directory of the audio file
+            speaker_name = os.path.basename(os.path.dirname(wav_file))
+            print(speaker_name)
             items.append({"text": text, "audio_file": wav_file, "speaker_name": speaker_name, "root_path": root_path})
     return items
-
 
 def nancy(root_path, meta_file, **kwargs):  # pylint: disable=unused-argument
     """Normalizes the Nancy meta data file to TTS format"""
