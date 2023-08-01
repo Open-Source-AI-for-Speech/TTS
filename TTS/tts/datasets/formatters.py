@@ -260,6 +260,22 @@ def css10(root_path, meta_file, **kwargs):  # pylint: disable=unused-argument
     return items
 
 
+def css10_custom(root_path, meta_file, **kwargs):
+    """Normalizes the CSS10 dataset file to TTS format with root_path and speaker name extraction"""
+    txt_file = os.path.join(root_path, meta_file)
+    items = []
+
+    with open(txt_file, "r", encoding="utf-8") as ttf:
+        for line in ttf:
+            cols = line.strip().split("|")
+            wav_file = os.path.join(root_path, cols[0])
+            text = cols[1]
+            # Extract the speaker name from the path
+            speaker_name = os.path.basename(root_path)
+            items.append({"text": text, "audio_file": wav_file, "speaker_name": speaker_name, "root_path": root_path})
+    return items
+
+
 def nancy(root_path, meta_file, **kwargs):  # pylint: disable=unused-argument
     """Normalizes the Nancy meta data file to TTS format"""
     txt_file = os.path.join(root_path, meta_file)
