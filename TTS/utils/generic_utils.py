@@ -37,6 +37,8 @@ def get_git_branch():
         current = "inside_docker"
     except FileNotFoundError:
         current = "unknown"
+    except StopIteration:
+        current = "unknown"
     return current
 
 
@@ -67,7 +69,7 @@ def get_experiment_folder_path(root_path, model_name):
 def remove_experiment_folder(experiment_path):
     """Check folder if there is a checkpoint, otherwise remove the folder"""
     fs = fsspec.get_mapper(experiment_path).fs
-    checkpoint_files = fs.glob(experiment_path + "/*.pth.tar")
+    checkpoint_files = fs.glob(experiment_path + "/*.pth")
     if not checkpoint_files:
         if fs.exists(experiment_path):
             fs.rm(experiment_path, recursive=True)
@@ -85,6 +87,7 @@ def to_camel(text):
     text = text.capitalize()
     text = re.sub(r"(?!^)_([a-zA-Z])", lambda m: m.group(1).upper(), text)
     text = text.replace("Tts", "TTS")
+    text = text.replace("vc", "VC")
     return text
 
 
@@ -167,9 +170,10 @@ def format_aux_input(def_args: Dict, kwargs: Dict) -> Dict:
     Returns:
         Dict: arguments with formatted auxilary inputs.
     """
+    kwargs = kwargs.copy()
     for name in def_args:
-        if name not in kwargs:
-            kwargs[def_args[name]] = None
+        if name not in kwargs or kwargs[name] is None:
+            kwargs[name] = def_args[name]
     return kwargs
 
 

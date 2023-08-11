@@ -37,8 +37,8 @@ def setup_loader(ap, r, verbose=False):
         precompute_num_workers=0,
         use_noise_augment=False,
         verbose=verbose,
-        speaker_id_mapping=speaker_manager.speaker_ids if c.use_speaker_embedding else None,
-        d_vector_mapping=speaker_manager.d_vectors if c.use_d_vector_file else None,
+        speaker_id_mapping=speaker_manager.name_to_id if c.use_speaker_embedding else None,
+        d_vector_mapping=speaker_manager.embeddings if c.use_d_vector_file else None,
     )
 
     if c.use_phonemes and c.compute_input_seq_cache:
@@ -164,7 +164,6 @@ def extract_spectrograms(
     model.eval()
     export_metadata = []
     for _, data in tqdm(enumerate(data_loader), total=len(data_loader)):
-
         # format data
         (
             text_input,

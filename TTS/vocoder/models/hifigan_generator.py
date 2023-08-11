@@ -15,7 +15,7 @@ def get_padding(k, d):
 
 
 class ResBlock1(torch.nn.Module):
-    """Residual Block Type 1. It has 3 convolutional layers in each convolutiona block.
+    """Residual Block Type 1. It has 3 convolutional layers in each convolutional block.
 
     Network::
 
@@ -105,7 +105,7 @@ class ResBlock1(torch.nn.Module):
 
 
 class ResBlock2(torch.nn.Module):
-    """Residual Block Type 1. It has 3 convolutional layers in each convolutiona block.
+    """Residual Block Type 2. It has 1 convolutional layers in each convolutional block.
 
     Network::
 
@@ -290,9 +290,9 @@ class HifiganGenerator(torch.nn.Module):
         remove_weight_norm(self.conv_post)
 
     def load_checkpoint(
-        self, config, checkpoint_path, eval=False
+        self, config, checkpoint_path, eval=False, cache=False
     ):  # pylint: disable=unused-argument, redefined-builtin
-        state = load_fsspec(checkpoint_path, map_location=torch.device("cpu"))
+        state = load_fsspec(checkpoint_path, map_location=torch.device("cpu"), cache=cache)
         self.load_state_dict(state["model"])
         if eval:
             self.eval()

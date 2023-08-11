@@ -14,7 +14,6 @@ from TTS.utils.io import save_fsspec
 
 class AugmentWAV(object):
     def __init__(self, ap, augmentation_config):
-
         self.ap = ap
         self.use_additive_noise = False
 
@@ -67,7 +66,6 @@ class AugmentWAV(object):
             self.global_noise_list.append("RIR_AUG")
 
     def additive_noise(self, noise_type, audio):
-
         clean_db = 10 * np.log10(np.mean(audio**2) + 1e-4)
 
         noise_list = random.sample(
@@ -125,7 +123,7 @@ def to_camel(text):
     return re.sub(r"(?!^)_([a-zA-Z])", lambda m: m.group(1).upper(), text)
 
 
-def setup_speaker_encoder_model(config: "Coqpit"):
+def setup_encoder_model(config: "Coqpit"):
     if config.model_params["model_name"].lower() == "lstm":
         model = LSTMSpeakerEncoder(
             config.model_params["input_dim"],
@@ -147,7 +145,7 @@ def setup_speaker_encoder_model(config: "Coqpit"):
 
 
 def save_checkpoint(model, optimizer, criterion, model_loss, out_path, current_step, epoch):
-    checkpoint_path = "checkpoint_{}.pth.tar".format(current_step)
+    checkpoint_path = "checkpoint_{}.pth".format(current_step)
     checkpoint_path = os.path.join(out_path, checkpoint_path)
     print(" | | > Checkpoint saving : {}".format(checkpoint_path))
 
@@ -177,7 +175,7 @@ def save_best_model(model, optimizer, criterion, model_loss, best_loss, out_path
             "date": datetime.date.today().strftime("%B %d, %Y"),
         }
         best_loss = model_loss
-        bestmodel_path = "best_model.pth.tar"
+        bestmodel_path = "best_model.pth"
         bestmodel_path = os.path.join(out_path, bestmodel_path)
         print("\n > BEST MODEL ({0:.5f}) : {1:}".format(model_loss, bestmodel_path))
         save_fsspec(state, bestmodel_path)
